@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Чат с ИИ{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        height: 500px;
+        overflow-y: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        background-color: #f8f9fa;
+    }
+    .message {
+        margin: 10px;
+        padding: 10px 15px;
+        border-radius: 15px;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+    .user-message {
+        background-color: #007bff;
+        color: white;
+        margin-left: auto;
+        text-align: right;
+    }
+    .ai-message {
+        background-color: #e9ecef;
+        color: #212529;
+        margin-right: auto;
+    }
+    .chat-input {
+        border-top: 1px solid #dee2e6;
+        padding: 15px;
+        background-color: white;
+    }
+    .typing-indicator {
+        display: none;
+        padding: 10px 15px;
+        color: #6c757d;
+        font-style: italic;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-robot me-2"></i>Чат с ИИ</h2>
+            </div>
+            <div class="card-body p-0">
+                <div class="chat-container" id="chatContainer">
+                    <div class="message ai-message">
+                        <strong>ИИ:</strong> Привет! Я готов помочь вам с вопросами по DevOps, автоматизации и управлению инфраструктурой. Что вас интересует?
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="messageInput" placeholder="Введите ваш вопрос..." autocomplete="off">
+                        <button class="btn btn-primary" type="button" id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        ИИ печатает...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-lightbulb me-2"></i>Примеры вопросов</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <button class="list-group-item list-group-item-action example-question">
+                        Как настроить CI/CD pipeline?
+                    </button>
+                    <button class="list-group-item list-group-item-action example-question">
+                        Какие лучшие практики для Docker контейнеризации?
+                    </button>
+                    <button class="list-group-item list-group-item-action example-question">
+                        Как мониторить производительность системы?
+                    </button>
+                    <button class="list-group-item list-group-item-action example-question">
+                        Рекомендации по безопасности инфраструктуры
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-history me-2"></i>История чата</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">История ваших разговоров с ИИ будет сохраняться здесь.</p>
+                <a href="/ai-chat/history" class="btn btn-outline-primary">
+                    <i class="fas fa-history me-2"></i>Просмотреть историю
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatContainer = document.getElementById('chatContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const typingIndicator = document.getElementById('typingIndicator');
+    
+    // Примеры вопросов
+    document.querySelectorAll('.example-question').forEach(button => {
+        button.addEventListener('click', function() {
+            messageInput.value = this.textContent;
+            sendMessage();
+        });
+    });
+    
+    // Отправка сообщения по Enter
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    // Отправка сообщения по кнопке
+    sendButton.addEventListener('click', sendMessage);
+    
+    function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        // Добавляем сообщение пользователя
+        addMessage(message, 'user');
+        messageInput.value = '';
+        
+        // Показываем индикатор печати
+        typingIndicator.style.display = 'block';
+        
+        // Имитируем ответ ИИ
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+            const aiResponse = generateAIResponse(message);
+            addMessage(aiResponse, 'ai');
+        }, 1000 + Math.random() * 2000);
+    }
+    
+    function addMessage(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        messageDiv.innerHTML = `<strong>${sender === 'user' ? 'Вы' : 'ИИ'}:</strong> ${text}`;
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    function generateAIResponse(userMessage) {
+        const responses = {
+            'ci/ccd': 'Для настройки CI/CD pipeline рекомендую использовать Jenkins, GitLab CI или GitHub Actions. Основные этапы: сборка, тестирование, деплой.',
+            'docker': 'Лучшие практики Docker: используйте многоэтапные сборки, минимизируйте размер образов, не запускайте контейнеры от root.',
+            'мониторинг': 'Для мониторинга используйте Prometheus + Grafana, ELK Stack или Datadog. Отслеживайте метрики производительности и логи.',
+            'безопасность': 'Основы безопасности: регулярные обновления, принцип наименьших привилегий, шифрование данных, мониторинг доступа.'
+        };
+        
+        const lowerMessage = userMessage.toLowerCase();
+        for (const [key, response] of Object.entries(responses)) {
+            if (lowerMessage.includes(key)) {
+                return response;
+            }
+        }
+        
+        return 'Спасибо за ваш вопрос! Я помогу вам с DevOps задачами. Можете задать более конкретный вопрос о CI/CD, контейнеризации, мониторинге или безопасности.';
+    }
+});
+</script>
+{% endblock %} 

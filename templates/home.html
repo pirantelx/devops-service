@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Главная страница - DevOps Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-home me-2"></i>Добро пожаловать в DevOps Service Portal</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Этот портал предоставляет комплексное решение для управления DevOps процессами и инфраструктурой.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-info-circle fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Сведения о АС/ФП</h5>
+                <p class="card-text">Управление информацией об автоматизированных системах и функциональных подсистемах.</p>
+                <a href="/as-fp" class="btn btn-primary">Перейти</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-cog fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Проверка настроек</h5>
+                <p class="card-text">Мониторинг и проверка конфигураций систем и приложений.</p>
+                <a href="/settings" class="btn btn-success">Перейти</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-rocket fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Автономные внедрения</h5>
+                <p class="card-text">Управление процессами развертывания и внедрения систем.</p>
+                <a href="/deployments" class="btn btn-warning">Перейти</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-network-wired fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Инфраструктурные работы</h5>
+                <p class="card-text">Планирование и выполнение инфраструктурных задач.</p>
+                <a href="/infrastructure" class="btn btn-info">Перейти</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-robot me-2"></i>Чат с ИИ</h5>
+            </div>
+            <div class="card-body">
+                <p>Получите помощь от искусственного интеллекта в решении DevOps задач.</p>
+                <a href="/ai-chat" class="btn btn-primary">Открыть чат</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user me-2"></i>Профиль пользователя</h5>
+            </div>
+            <div class="card-body">
+                <p>Управление настройками профиля и персональными данными.</p>
+                <a href="/profile" class="btn btn-secondary">Профиль</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line me-2"></i>Статистика системы</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <h3 class="text-primary">0</h3>
+                        <p class="text-muted">АС/ФП</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h3 class="text-success">0</h3>
+                        <p class="text-muted">Настроек</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h3 class="text-warning">0</h3>
+                        <p class="text-muted">Внедрений</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h3 class="text-info">0</h3>
+                        <p class="text-muted">Инфраструктурных работ</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

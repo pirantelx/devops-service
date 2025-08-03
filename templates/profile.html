@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user me-2"></i>Информация о пользователе</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle fa-5x text-primary"></i>
+                </div>
+                <h5>{{ user.username }}</h5>
+                <p class="text-muted">{{ user.email if user.email else 'Email не указан' }}</p>
+                <p class="text-muted">{{ user.full_name if user.full_name else 'Полное имя не указано' }}</p>
+                <a href="/profile/edit" class="btn btn-primary">
+                    <i class="fas fa-edit me-2"></i>Редактировать профиль
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar me-2"></i>Статистика активности</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <h4 class="text-primary">0</h4>
+                        <small class="text-muted">Созданных АС/ФП</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h4 class="text-success">0</h4>
+                        <small class="text-muted">Проверенных настроек</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h4 class="text-warning">0</h4>
+                        <small class="text-muted">Запущенных внедрений</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h4 class="text-info">0</h4>
+                        <small class="text-muted">Выполненных задач</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-clock me-2"></i>Последняя активность</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-sign-in-alt text-success me-2"></i>
+                            Вход в систему
+                        </div>
+                        <small class="text-muted">Сегодня, 10:30</small>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-eye text-info me-2"></i>
+                            Просмотр страницы АС/ФП
+                        </div>
+                        <small class="text-muted">Вчера, 15:45</small>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-cog text-warning me-2"></i>
+                            Проверка настроек
+                        </div>
+                        <small class="text-muted">2 дня назад</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-shield-alt me-2"></i>Безопасность</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Изменить пароль</label>
+                    <div class="d-grid">
+                        <button class="btn btn-outline-warning">
+                            <i class="fas fa-key me-2"></i>Сменить пароль
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Двухфакторная аутентификация</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="twoFactorAuth">
+                        <label class="form-check-label" for="twoFactorAuth">
+                            Включить 2FA
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-cog me-2"></i>Настройки</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Уведомления</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                        <label class="form-check-label" for="emailNotifications">
+                            Email уведомления
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="systemNotifications" checked>
+                        <label class="form-check-label" for="systemNotifications">
+                            Системные уведомления
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Язык интерфейса</label>
+                    <select class="form-select">
+                        <option value="ru" selected>Русский</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
