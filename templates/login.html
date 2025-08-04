@@ -58,7 +58,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             // Сохраняем токен в localStorage
             localStorage.setItem('access_token', result.access_token);
             // Перенаправляем на главную страницу
-            window.location.href = '/home';
+            window.location.href = '/';
         } else {
             const error = await response.json();
             alert('Ошибка входа: ' + error.detail);

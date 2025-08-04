@@ -14,6 +14,9 @@
         .nav-link {
             color: #34495e !important;
             font-weight: 500;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            padding: 0.5rem 0.75rem !important;
         }
         .nav-link:hover {
             color: #3498db !important;
@@ -21,6 +24,24 @@
         .nav-link.active {
             color: #3498db !important;
             font-weight: bold;
+        }
+        .navbar-nav {
+            flex-wrap: wrap;
+        }
+        .navbar-nav .nav-item {
+            margin-right: 0.25rem;
+        }
+        @media (max-width: 1200px) {
+            .nav-link {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.6rem !important;
+            }
+        }
+        @media (max-width: 992px) {
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem !important;
+            }
         }
         .main-content {
             min-height: calc(100vh - 120px);
@@ -62,64 +83,74 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/home">
+                        <a class="nav-link" href="/" data-protected="false">
                             <i class="fas fa-home me-1"></i>
                             Главная страница
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/as-fp">
+                        <a class="nav-link" href="/as-fp" data-protected="true">
                             <i class="fas fa-info-circle me-1"></i>
                             Сведения о АС/ФП
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/settings">
+                        <a class="nav-link" href="/settings" data-protected="true">
                             <i class="fas fa-cog me-1"></i>
                             Проверка настроек
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/deployments">
+                        <a class="nav-link" href="/deployments" data-protected="true">
                             <i class="fas fa-rocket me-1"></i>
                             Автономные внедрения
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/infrastructure">
-                            <i class="fas fa-network-wired me-1"></i>
-                            Инфраструктурные работы
+                        <a class="nav-link" href="/news" data-protected="true">
+                            <i class="fas fa-newspaper me-1"></i>
+                            Новости
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/ai-chat">
+                        <a class="nav-link" href="/problems" data-protected="true">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            Проблемы и их решения
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ai-chat" data-protected="true">
                             <i class="fas fa-robot me-1"></i>
                             Чат с ИИ
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/infrastructure" data-protected="true">
+                            <i class="fas fa-network-wired me-1"></i>
+                            Инфраструктурные работы
+                        </a>
+                    </li>
                 </ul>
+
                 
                 <ul class="navbar-nav">
-                    {% if user %}
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" id="userDropdown" style="display: none;">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user me-1"></i>
-                            {{ user.username }}
+                            <span id="username">Пользователь</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/profile">Профиль</a></li>
+                            <li><a class="dropdown-item" href="/profile" data-protected="true">Профиль</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/logout">Выйти</a></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn">Выйти</a></li>
                         </ul>
                     </li>
-                    {% else %}
-                    <li class="nav-item">
+                    <li class="nav-item" id="authLinks">
                         <a class="nav-link" href="/login">Войти</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="registerLink">
                         <a class="nav-link" href="/register">Регистрация</a>
                     </li>
-                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -137,7 +168,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <p class="mb-0">&copy; 2024 DevOps Service Portal. Все права защищены.</p>
+                    <p class="mb-0">&copy; 2025 DevOps Service Portal. Все права защищены.</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <p class="mb-0">Версия 1.0.0</p>
@@ -147,6 +178,123 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    // Функция для обновления UI в зависимости от статуса аутентификации
+    function updateAuthUI() {
+        const token = localStorage.getItem('access_token');
+        const userDropdown = document.getElementById('userDropdown');
+        const authLinks = document.getElementById('authLinks');
+        const registerLink = document.getElementById('registerLink');
+        const username = document.getElementById('username');
+        
+        if (token) {
+            // Пользователь авторизован
+            userDropdown.style.display = 'block';
+            authLinks.style.display = 'none';
+            registerLink.style.display = 'none';
+            
+            // Получаем информацию о пользователе из токена
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.sub) {
+                    username.textContent = payload.sub;
+                }
+            } catch (e) {
+                console.error('Ошибка при декодировании токена:', e);
+                // Если токен поврежден, удаляем его
+                localStorage.removeItem('access_token');
+                updateAuthUI();
+            }
+        } else {
+            // Пользователь не авторизован
+            userDropdown.style.display = 'none';
+            authLinks.style.display = 'block';
+            registerLink.style.display = 'block';
+        }
+    }
+    
+    // Проверка аутентификации при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        updateAuthUI();
+        
+        // Обработка выхода
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '/login';
+            });
+        }
+        
+        // Обработка защищенных ссылок
+        document.querySelectorAll('a[data-protected="true"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    e.preventDefault();
+                    alert('Необходимо войти в систему');
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                // Для защищенных страниц используем fetch с токеном
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else if (response.status === 401) {
+                        // Токен истек или недействителен
+                        localStorage.removeItem('access_token');
+                        alert('Сессия истекла. Войдите снова.');
+                        window.location.href = '/login';
+                        throw new Error('Unauthorized');
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(html => {
+                    // Обновляем содержимое страницы
+                    document.documentElement.innerHTML = html;
+                    // Повторно инициализируем UI после загрузки новой страницы
+                    setTimeout(updateAuthUI, 100);
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке страницы:', error);
+                    if (error.message !== 'Unauthorized') {
+                        alert('Ошибка при загрузке страницы');
+                    }
+                });
+            });
+        });
+        
+        // Обработка незащищенных ссылок (обычная навигация)
+        document.querySelectorAll('a[data-protected="false"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Обычная навигация без проверки токена
+                // Позволяем браузеру обрабатывать переходы естественным образом
+            });
+        });
+    });
+    
+    // Обновляем UI при изменении localStorage
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'access_token') {
+            updateAuthUI();
+        }
+    });
+    </script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html> 

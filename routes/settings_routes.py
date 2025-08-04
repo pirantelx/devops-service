@@ -36,8 +36,8 @@ async def settings_detail(request: Request, name: str, current_user: dict = Depe
     return templates.TemplateResponse("settings_detail.html", {
         "request": request,
         "user": current_user,
-        "name": name,
-        "data": data
+        "settings": data,
+        "name": name
     })
 
 @router.get("/settings/create", response_class=HTMLResponse)

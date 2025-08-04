@@ -15,6 +15,8 @@ class DataManager:
         (self.data_dir / "deployments").mkdir(exist_ok=True)
         (self.data_dir / "infrastructure").mkdir(exist_ok=True)
         (self.data_dir / "ai_chat").mkdir(exist_ok=True)
+        (self.data_dir / "news").mkdir(exist_ok=True)
+        (self.data_dir / "problems").mkdir(exist_ok=True)
     
     def save_json(self, filename: str, data: Dict[str, Any], subdir: str = "") -> bool:
         """Сохранение данных в JSON файл"""
@@ -116,4 +118,22 @@ class DataManager:
     
     def load_infrastructure(self, name: str) -> Optional[Dict[str, Any]]:
         """Загрузка инфраструктурных данных"""
-        return self.load_json(name, "infrastructure") 
+        return self.load_json(name, "infrastructure")
+    
+    def save_news_data(self, name: str, data: Dict[str, Any]) -> bool:
+        """Сохранение данных новостей"""
+        return self.save_json(name, data, "news")
+    
+    def load_news_data(self, name: str = "news") -> Optional[List[Dict[str, Any]]]:
+        """Загрузка данных новостей"""
+        data = self.load_json(name, "news")
+        return data if data else []
+    
+    def save_problems_data(self, name: str, data: Dict[str, Any]) -> bool:
+        """Сохранение данных проблем"""
+        return self.save_json(name, data, "problems")
+    
+    def load_problems_data(self, name: str = "problems") -> Optional[List[Dict[str, Any]]]:
+        """Загрузка данных проблем"""
+        data = self.load_json(name, "problems")
+        return data if data else [] 

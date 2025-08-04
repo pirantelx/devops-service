@@ -19,7 +19,9 @@ from routes import (
     deployments_routes,
     infrastructure_routes,
     ai_chat_routes,
-    profile_routes
+    profile_routes,
+    news_routes,
+    problems_routes
 )
 
 app = FastAPI(title="DevOps Service Portal", version="1.0.0")
@@ -40,11 +42,13 @@ app.include_router(deployments_routes.router)
 app.include_router(infrastructure_routes.router)
 app.include_router(ai_chat_routes.router)
 app.include_router(profile_routes.router)
+app.include_router(news_routes.router)
+app.include_router(problems_routes.router)
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     """Главная страница"""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("home.html", {"request": request})
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 

@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Проблемы и их решения{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-exclamation-triangle me-2"></i>Проблемы и их решения</h2>
+            <a href="/problems/create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Добавить проблему
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-success">{{ problems|selectattr('status', 'equalto', 'resolved')|list|length }}</h4>
+                            <p class="text-muted mb-0">Решено</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-warning">{{ problems|selectattr('status', 'equalto', 'in_progress')|list|length }}</h4>
+                            <p class="text-muted mb-0">В работе</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border-end">
+                            <h4 class="text-danger">{{ problems|selectattr('status', 'equalto', 'critical')|list|length }}</h4>
+                            <p class="text-muted mb-0">Критические</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="text-info">{{ problems|length }}</h4>
+                        <p class="text-muted mb-0">Всего</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% if problems %}
+        {% for item in problems %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-{{ item.priority_color|default('secondary') }}">{{ item.priority }}</span>
+                        <span class="badge bg-{{ item.status_color|default('secondary') }}">{{ item.status }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text text-muted">
+                        <small>
+                            <i class="fas fa-calendar me-1"></i>
+                            {{ item.created_date }}
+                        </small>
+                    </p>
+                    <p class="card-text">{{ item.description[:150] }}{% if item.description|length > 150 %}...{% endif %}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>
+                            {{ item.reported_by }}
+                        </small>
+                        <a href="/problems/{{ item.id }}" class="btn btn-outline-primary btn-sm">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Проблемы пока не добавлены. 
+                <a href="/problems/create" class="alert-link">Добавить первую проблему</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Пример данных для демонстрации -->
+<script>
+// Если нет данных, показываем пример
+if (document.querySelectorAll('.card').length === 1) { // Только карточка со статистикой
+    const exampleProblems = [
+        {
+            id: "1",
+            title: "Высокая нагрузка на сервер БД",
+            description: "Обнаружена высокая нагрузка на основной сервер базы данных, что приводит к замедлению работы приложений.",
+            created_date: "2024-01-15",
+            priority: "Высокий",
+            priority_color: "danger",
+            status: "В работе",
+            status_color: "warning",
+            reported_by: "Система мониторинга"
+        },
+        {
+            id: "2",
+            title: "Ошибка аутентификации в API",
+            description: "Пользователи не могут войти в систему через мобильное приложение из-за ошибки в API аутентификации.",
+            created_date: "2024-01-12",
+            priority: "Критический",
+            priority_color: "danger",
+            status: "Решено",
+            status_color: "success",
+            reported_by: "Пользователи"
+        },
+        {
+            id: "3",
+            title: "Медленная загрузка страниц",
+            description: "Веб-интерфейс загружается медленно, особенно при работе с большими объемами данных.",
+            created_date: "2024-01-10",
+            priority: "Средний",
+            priority_color: "warning",
+            status: "В работе",
+            status_color: "warning",
+            reported_by: "Отдел разработки"
+        }
+    ];
+    
+    const container = document.querySelector('.row:last-child');
+    container.innerHTML = '';
+    
+    exampleProblems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'col-md-6 col-lg-4 mb-4';
+        card.innerHTML = `
+            <div class="card h-100">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-${item.priority_color}">${item.priority}</span>
+                        <span class="badge bg-${item.status_color}">${item.status}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${item.title}</h5>
+                    <p class="card-text text-muted">
+                        <small>
+                            <i class="fas fa-calendar me-1"></i>
+                            ${item.created_date}
+                        </small>
+                    </p>
+                    <p class="card-text">${item.description}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>
+                            ${item.reported_by}
+                        </small>
+                        <a href="/problems/${item.id}" class="btn btn-outline-primary btn-sm">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+</script>
+{% endblock %} 

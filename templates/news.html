@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Новости{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-newspaper me-2"></i>Новости</h2>
+            <a href="/news/create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Добавить новость
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% if news %}
+        {% for item in news %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                {% if item.image %}
+                <img src="{{ item.image }}" class="card-img-top" alt="{{ item.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text text-muted">
+                        <small>
+                            <i class="fas fa-calendar me-1"></i>
+                            {{ item.date }}
+                        </small>
+                    </p>
+                    <p class="card-text">{{ item.summary[:150] }}{% if item.summary|length > 150 %}...{% endif %}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-{{ item.category_color|default('primary') }}">{{ item.category }}</span>
+                        <a href="/news/{{ item.id }}" class="btn btn-outline-primary btn-sm">
+                            Читать далее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Новости пока не добавлены. 
+                <a href="/news/create" class="alert-link">Добавить первую новость</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Пример данных для демонстрации -->
+<script>
+// Если нет данных, показываем пример
+if (document.querySelectorAll('.card').length === 0) {
+    const exampleNews = [
+        {
+            id: "1",
+            title: "Обновление системы мониторинга",
+            summary: "Внедрена новая система мониторинга производительности серверов с улучшенной аналитикой и уведомлениями.",
+            date: "2024-01-15",
+            category: "Обновления",
+            category_color: "success"
+        },
+        {
+            id: "2", 
+            title: "Плановое техническое обслуживание",
+            summary: "Запланировано техническое обслуживание инфраструктуры на 20 января 2024 года с 02:00 до 06:00 МСК.",
+            date: "2024-01-10",
+            category: "Обслуживание",
+            category_color: "warning"
+        },
+        {
+            id: "3",
+            title: "Новые возможности в DevOps портале",
+            summary: "Добавлены новые функции для управления развертываниями и мониторинга состояния систем.",
+            date: "2024-01-05",
+            category: "Разработка",
+            category_color: "info"
+        }
+    ];
+    
+    const container = document.querySelector('.row');
+    container.innerHTML = '';
+    
+    exampleNews.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'col-md-6 col-lg-4 mb-4';
+        card.innerHTML = `
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">${item.title}</h5>
+                    <p class="card-text text-muted">
+                        <small>
+                            <i class="fas fa-calendar me-1"></i>
+                            ${item.date}
+                        </small>
+                    </p>
+                    <p class="card-text">${item.summary}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-${item.category_color}">${item.category}</span>
+                        <a href="/news/${item.id}" class="btn btn-outline-primary btn-sm">
+                            Читать далее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+</script>
+{% endblock %} 

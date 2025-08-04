@@ -20,11 +20,7 @@ async def deployments_page(request: Request, current_user: dict = Depends(get_cu
         if data:
             deployments_data.append({"name": name, "data": data})
     
-    return templates.TemplateResponse("deployments.html", {
-        "request": request,
-        "user": current_user,
-        "deployments_list": deployments_data
-    })
+    return templates.TemplateResponse("deployments.html", {"request": request, "user": current_user, "deployments_list": deployments_data})
 
 @router.get("/deployments/{name}", response_class=HTMLResponse)
 async def deployment_detail(request: Request, name: str, current_user: dict = Depends(get_current_user)):
@@ -33,17 +29,9 @@ async def deployment_detail(request: Request, name: str, current_user: dict = De
     if not data:
         return templates.TemplateResponse("404.html", {"request": request})
     
-    return templates.TemplateResponse("deployment_detail.html", {
-        "request": request,
-        "user": current_user,
-        "name": name,
-        "data": data
-    })
+    return templates.TemplateResponse("deployment_detail.html", {"request": request, "user": current_user, "deployment": data, "name": name})
 
 @router.get("/deployments/create", response_class=HTMLResponse)
 async def deployment_create_page(request: Request, current_user: dict = Depends(get_current_user)):
     """Страница создания нового внедрения"""
-    return templates.TemplateResponse("deployment_create.html", {
-        "request": request,
-        "user": current_user
-    }) 
+    return templates.TemplateResponse("deployment_create.html", {"request": request, "user": current_user}) 
