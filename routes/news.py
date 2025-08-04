@@ -65,22 +65,6 @@ async def news_page(
         "can_manage_news": can_manage_news(current_user)
     })
 
-@router.get("/news/{news_id}", response_class=HTMLResponse)
-async def news_detail(request: Request, news_id: str):
-    """Детальная страница новости"""
-    current_user = await get_current_user_from_request(request)
-    if not current_user:
-        return RedirectResponse(url="/login", status_code=302)
-    
-    news = news_manager.get_news(news_id)
-    if not news:
-        raise HTTPException(status_code=404, detail="Новость не найдена")
-    
-    return templates.TemplateResponse("news_detail.html", {
-        "request": request,
-        "user": current_user,
-        "news": news
-    })
 
 @router.get("/news/create", response_class=HTMLResponse)
 async def news_create_page(request: Request):
@@ -127,6 +111,23 @@ async def create_news(
     news = news_manager.create_news(news_data)
     
     return RedirectResponse(url=f"/news/{news.id}", status_code=302)
+
+@router.get("/news/{news_id}", response_class=HTMLResponse)
+async def news_detail(request: Request, news_id: str):
+    """Детальная страница новости"""
+    current_user = await get_current_user_from_request(request)
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+    
+    news = news_manager.get_news(news_id)
+    if not news:
+        raise HTTPException(status_code=404, detail="Новость не найдена")
+    
+    return templates.TemplateResponse("news_detail.html", {
+        "request": request,
+        "user": current_user,
+        "news": news
+    })
 
 @router.get("/news/{news_id}/edit", response_class=HTMLResponse)
 async def news_edit_page(request: Request, news_id: str):

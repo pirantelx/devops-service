@@ -4,5 +4,11 @@
     "hashed_password": "$2b$12$GPvWhXPsQgXIzsPCgoG2HePgN8LFNUxX16tFQx7tVhYSYM5k7LGA2",
     "disabled": false,
     "role": "DevOps"
+  },
+  "15": {
+    "username": "15",
+    "hashed_password": "$2b$12$2clAdHLxmTy689YNYyy8yuTgrHuk1/vhWaV7WO8cAGH.ISXe8qjk.",
+    "disabled": false,
+    "role": "Разработчик"
   }
 }
