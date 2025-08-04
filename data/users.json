@@ -4,5 +4,11 @@
     "hashed_password": "$2b$12$GPvWhXPsQgXIzsPCgoG2HePgN8LFNUxX16tFQx7tVhYSYM5k7LGA2",
     "disabled": false,
     "role": "DevOps"
+  },
+  "19823929": {
+    "username": "19823929",
+    "hashed_password": "$2b$12$r3.XUhdoQ0eCGeBmnxwI1ezQKZLKKHvx6eSxzQ2ervekrIwy6xwha",
+    "disabled": false,
+    "role": "Разработчик"
   }
 }

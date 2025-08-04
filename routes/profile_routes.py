@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, HTTPException, status
+from fastapi import APIRouter, Request, HTTPException, status, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from auth.auth import get_current_user_from_request
@@ -16,7 +16,7 @@ async def profile_page(request: Request):
     return templates.TemplateResponse("profile.html", {"request": request, "user": current_user})
 
 @router.get("/profile/edit", response_class=HTMLResponse)
-async def profile_edit_page(request: Request, current_user: dict = Depends(get_current_user)):
+async def profile_edit_page(request: Request, current_user: dict = Depends(get_current_user_from_request)):
     """Страница редактирования профиля"""
     return templates.TemplateResponse("profile_edit.html", {
         "request": request,
