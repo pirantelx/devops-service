@@ -3,13 +3,6 @@
     "username": "19823928",
     "email": "dsdyusenov@sberbank.ru",
     "full_name": "Дюсенов Дамир Сергеевич",
-    "hashed_password": "$2b$12$/k24m0XExrUYKWJC5EI/7uSFWxwPTHQ4m9vMkYDwFtFqobmM4eJDK",
-    "disabled": false
-  },
-  "19823929": {
-    "username": "19823929",
-    "email": "dsdyusenov@sberbank.ru",
-    "full_name": "Дюсенов Дамир Сергеевич",
     "hashed_password": "$2b$12$NKQXZt2hO2InhUoRDBLeTOgwHEIhtmRMFtOPSMJUyFEMMN3ZBRjyu",
     "disabled": false
   }
