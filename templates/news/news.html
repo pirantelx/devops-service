@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Новости{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-newspaper me-2"></i>Новости</h2>
+            {% if can_manage_news %}
+            <a href="/news/create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Добавить новость
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Фильтры -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="GET" action="/news" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="search" class="form-label">Поиск</label>
+                        <input type="text" class="form-control" id="search" name="search" 
+                               value="{{ filters.search or '' }}" placeholder="Поиск по заголовку...">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="label" class="form-label">Лейбл</label>
+                        <select class="form-select" id="label" name="label">
+                            <option value="">Все лейблы</option>
+                            {% for label in labels %}
+                            <option value="{{ label }}" {% if filters.label == label %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="date_from" class="form-label">Дата с</label>
+                        <input type="date" class="form-control" id="date_from" name="date_from" 
+                               value="{{ filters.date_from or '' }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="date_to" class="form-label">Дата по</label>
+                        <input type="date" class="form-control" id="date_to" name="date_to" 
+                               value="{{ filters.date_to or '' }}">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-search me-1"></i>Фильтровать
+                        </button>
+                        <a href="/news" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Сбросить
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Результаты поиска -->
+{% if filters.search or filters.label or filters.date_from or filters.date_to %}
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="fas fa-filter me-2"></i>
+            <strong>Фильтры:</strong>
+            {% if filters.search %}Поиск: "{{ filters.search }}"{% endif %}
+            {% if filters.label %}Лейбл: {{ filters.label }}{% endif %}
+            {% if filters.date_from %}Дата с: {{ filters.date_from }}{% endif %}
+            {% if filters.date_to %}Дата по: {{ filters.date_to }}{% endif %}
+            <a href="/news" class="float-end">Сбросить фильтры</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Список новостей -->
+<div class="row">
+    {% if news_list %}
+        {% for news in news_list %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ news.title }}</h5>
+                    <p class="card-text text-muted">
+                        <small>
+                            <i class="fas fa-calendar me-1"></i>
+                            {{ news.created_at.strftime('%d.%m.%Y %H:%M') }}
+                        </small>
+                    </p>
+                    <p class="card-text">
+                        {{ news.content[:150] }}{% if news.content|length > 150 %}...{% endif %}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary">{{ news.label }}</span>
+                        <a href="/news/{{ news.id }}" class="btn btn-outline-primary btn-sm">
+                            Читать далее
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>
+                        <i class="fas fa-user me-1"></i>{{ news.author }}
+                        {% if news.updated_at %}
+                        <br><i class="fas fa-edit me-1"></i>Обновлено: {{ news.updated_at.strftime('%d.%m.%Y %H:%M') }}
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                {% if filters.search or filters.label or filters.date_from or filters.date_to %}
+                    Новости по заданным критериям не найдены.
+                {% else %}
+                    Новости пока не добавлены. 
+                {% endif %}
+                <a href="/news/create" class="alert-link">Добавить новость</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Пагинация -->
+{% if pagination.pages > 1 %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="Навигация по страницам">
+            <ul class="pagination justify-content-center">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="/news?page={{ pagination.page - 1 }}{% if filters.search %}&search={{ filters.search }}{% endif %}{% if filters.label %}&label={{ filters.label }}{% endif %}{% if filters.date_from %}&date_from={{ filters.date_from }}{% endif %}{% if filters.date_to %}&date_to={{ filters.date_to }}{% endif %}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for page_num in range(1, pagination.pages + 1) %}
+                    {% if page_num == pagination.page %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_num }}</span>
+                    </li>
+                    {% elif page_num <= 3 or page_num > pagination.pages - 3 or (page_num >= pagination.page - 1 and page_num <= pagination.page + 1) %}
+                    <li class="page-item">
+                        <a class="page-link" href="/news?page={{ page_num }}{% if filters.search %}&search={{ filters.search }}{% endif %}{% if filters.label %}&label={{ filters.label }}{% endif %}{% if filters.date_from %}&date_from={{ filters.date_from }}{% endif %}{% if filters.date_to %}&date_to={{ filters.date_to }}{% endif %}">
+                            {{ page_num }}
+                        </a>
+                    </li>
+                    {% elif page_num == 4 and pagination.page > 6 %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    {% elif page_num == pagination.pages - 3 and pagination.page < pagination.pages - 5 %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="/news?page={{ pagination.page + 1 }}{% if filters.search %}&search={{ filters.search }}{% endif %}{% if filters.label %}&label={{ filters.label }}{% endif %}{% if filters.date_from %}&date_from={{ filters.date_from }}{% endif %}{% if filters.date_to %}&date_to={{ filters.date_to }}{% endif %}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endif %}
+
+<!-- Статистика -->
+{% if pagination.total > 0 %}
+<div class="row mt-3">
+    <div class="col-12 text-center">
+        <small class="text-muted">
+            Показано {{ (pagination.page - 1) * 6 + 1 }}-{{ min(pagination.page * 6, pagination.total) }} из {{ pagination.total }} новостей
+        </small>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

@@ -50,16 +50,19 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
-            redirect: 'follow'
+            body: JSON.stringify(data)
         });
         
         if (response.ok) {
             // При успешном входе сервер перенаправит нас
             window.location.href = '/';
         } else {
-            const error = await response.json();
-            alert('Ошибка входа: ' + error.detail);
+            try {
+                const error = await response.json();
+                alert('Ошибка входа: ' + error.detail);
+            } catch (e) {
+                alert('Ошибка входа: Не удалось обработать ответ сервера');
+            }
         }
     } catch (error) {
         alert('Ошибка соединения: ' + error.message);

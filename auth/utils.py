@@ -8,14 +8,18 @@ from typing import Optional
 # Настройки для JWT
 SECRET_KEY = "your-secret-key-here"  # В продакшене использовать переменную окружения
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 1440  # 24 часа
 
 # Настройки для хеширования паролей
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Проверка пароля"""
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        result = pwd_context.verify(plain_password, hashed_password)
+        return result
+    except Exception as e:
+        return False
 
 def get_password_hash(password: str) -> str:
     """Хеширование пароля"""

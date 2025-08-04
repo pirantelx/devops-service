@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, Literal
+from datetime import datetime
 
 class User(BaseModel):
     username: str
@@ -23,4 +24,25 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    username: Optional[str] = None 
+    username: Optional[str] = None
+
+# Модели для новостей
+class NewsCreate(BaseModel):
+    title: str
+    content: str
+    label: str
+    author: str
+
+class NewsUpdate(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None
+    label: Optional[str] = None
+
+class News(BaseModel):
+    id: str
+    title: str
+    content: str
+    label: str
+    author: str
+    created_at: datetime
+    updated_at: Optional[datetime] = None 

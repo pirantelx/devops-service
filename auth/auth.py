@@ -60,5 +60,5 @@ def create_access_token(data: dict):
     from auth.utils import create_access_token as create_token
     from datetime import timedelta
     
-    access_token_expires = timedelta(minutes=60)
+    access_token_expires = timedelta(minutes=1440)  # 24 часа
     return create_token(data=data, expires_delta=access_token_expires) 

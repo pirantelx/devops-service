@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование новости{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-edit me-2"></i>Редактирование новости</h2>
+            <a href="/news/{{ news.id }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Назад к новости
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="/news/{{ news.id }}/edit">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Заголовок *</label>
+                        <input type="text" class="form-control" id="title" name="title" required 
+                               value="{{ news.title }}" placeholder="Введите заголовок новости">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="label" class="form-label">Лейбл *</label>
+                        <select class="form-select" id="label" name="label" required>
+                            <option value="">Выберите лейбл</option>
+                            <option value="Обновления" {% if news.label == "Обновления" %}selected{% endif %}>Обновления</option>
+                            <option value="Обслуживание" {% if news.label == "Обслуживание" %}selected{% endif %}>Обслуживание</option>
+                            <option value="Разработка" {% if news.label == "Разработка" %}selected{% endif %}>Разработка</option>
+                            <option value="Безопасность" {% if news.label == "Безопасность" %}selected{% endif %}>Безопасность</option>
+                            <option value="Инфраструктура" {% if news.label == "Инфраструктура" %}selected{% endif %}>Инфраструктура</option>
+                            <option value="Важное" {% if news.label == "Важное" %}selected{% endif %}>Важное</option>
+                            <option value="Информация" {% if news.label == "Информация" %}selected{% endif %}>Информация</option>
+                            <option value="Новости" {% if news.label == "Новости" %}selected{% endif %}>Новости</option>
+                        </select>
+                        <div class="form-text">
+                            Или введите новый лейбл:
+                            <input type="text" class="form-control mt-2" id="custom_label" 
+                                   placeholder="Введите новый лейбл" onchange="updateLabel(this.value)">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Содержание *</label>
+                        <textarea class="form-control" id="content" name="content" rows="10" required 
+                                  placeholder="Введите полный текст новости">{{ news.content }}</textarea>
+                        <div class="form-text">
+                            Поддерживается Markdown разметка для форматирования текста.
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Сохранить изменения
+                        </button>
+                        <a href="/news/{{ news.id }}" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateLabel(value) {
+    if (value.trim()) {
+        document.getElementById('label').value = value;
+    }
+}
+
+// Предварительный просмотр Markdown
+document.getElementById('content').addEventListener('input', function() {
+    // Здесь можно добавить предварительный просмотр Markdown
+    // Для простоты пока оставляем как есть
+});
+</script>
+{% endblock %} 

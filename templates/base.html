@@ -82,69 +82,75 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+                    {% if user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/as-fp" data-protected="true">
+                        <a class="nav-link" href="/as-fp">
                             <i class="fas fa-info-circle me-1"></i>
                             Сведения о АС/ФП
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/settings" data-protected="true">
+                        <a class="nav-link" href="/settings">
                             <i class="fas fa-cog me-1"></i>
                             Проверка настроек
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/deployments" data-protected="true">
+                        <a class="nav-link" href="/deployments">
                             <i class="fas fa-rocket me-1"></i>
                             Автономные внедрения
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/news" data-protected="true">
+                        <a class="nav-link" href="/news">
                             <i class="fas fa-newspaper me-1"></i>
                             Новости
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/problems" data-protected="true">
+                        <a class="nav-link" href="/problems">
                             <i class="fas fa-exclamation-triangle me-1"></i>
                             Проблемы и их решения
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/ai-chat" data-protected="true">
+                        <a class="nav-link" href="/ai-chat">
                             <i class="fas fa-robot me-1"></i>
                             Чат с ИИ
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/infrastructure" data-protected="true">
+                        <a class="nav-link" href="/infrastructure">
                             <i class="fas fa-network-wired me-1"></i>
                             Инфраструктурные работы
                         </a>
                     </li>
+                    {% endif %}
                 </ul>
 
                 
                 <ul class="navbar-nav">
-                    <li class="nav-item dropdown" id="userDropdown" style="display: none;">
+                    {% if user %}
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user me-1"></i>
-                            <span id="username">Пользователь</span>
+                            <span id="username">{{ user.username }}</span>
+                            <small class="text-muted d-block">{{ user.role }}</small>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/profile" data-protected="true">Профиль</a></li>
+                            <li><a class="dropdown-item" href="/profile">Профиль</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" id="logoutBtn">Выйти</a></li>
+                            <li><a class="dropdown-item" href="/logout">Выйти</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item" id="authLinks">
+                    {% else %}
+                    <li class="nav-item">
                         <a class="nav-link" href="/login">Войти</a>
                     </li>
-                    <li class="nav-item" id="registerLink">
+                    <li class="nav-item">
                         <a class="nav-link" href="/register">Регистрация</a>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -174,22 +180,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-    // Глобальный перехватчик для добавления токена к заголовкам
-    (function() {
-        const originalFetch = window.fetch;
-        window.fetch = function(url, options = {}) {
-            // Получаем токен из cookie
-            const token = getCookie('access_token');
-            if (token) {
-                options.headers = {
-                    ...options.headers,
-                    'Authorization': `Bearer ${token}`
-                };
-            }
-            return originalFetch(url, options);
-        };
-    })();
-    
     // Функция для получения cookie
     function getCookie(name) {
         const value = `; ${document.cookie}`;
@@ -198,56 +188,8 @@
         return null;
     }
     
-    // Функция для обновления UI в зависимости от статуса аутентификации
-    function updateAuthUI() {
-        const token = getCookie('access_token');
-        const userDropdown = document.getElementById('userDropdown');
-        const authLinks = document.getElementById('authLinks');
-        const registerLink = document.getElementById('registerLink');
-        const username = document.getElementById('username');
-        
-        if (token) {
-            // Пользователь авторизован
-            userDropdown.style.display = 'block';
-            authLinks.style.display = 'none';
-            registerLink.style.display = 'none';
-            
-            // Получаем информацию о пользователе из токена
-            try {
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                if (payload.sub) {
-                    username.textContent = payload.sub;
-                }
-            } catch (e) {
-                console.error('Ошибка при декодировании токена:', e);
-                // Если токен поврежден, удаляем его
-                document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                updateAuthUI();
-            }
-        } else {
-            // Пользователь не авторизован
-            userDropdown.style.display = 'none';
-            authLinks.style.display = 'block';
-            registerLink.style.display = 'block';
-        }
-        
-        console.log('Auth UI updated. Token exists:', !!token);
-    }
-    
     // Проверка аутентификации при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
-        updateAuthUI();
-        
-        // Обработка выхода
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                window.location.href = '/';
-            });
-        }
-        
         // Обработка защищенных ссылок
         document.querySelectorAll('a[data-protected="true"]').forEach(link => {
             link.addEventListener('click', function(e) {
@@ -258,27 +200,8 @@
                     window.location.href = '/login';
                     return;
                 }
-                
-                // Используем обычную навигацию браузера для защищенных страниц
-                // Токен будет автоматически отправлен в заголовке Authorization
-                // благодаря настройкам в fetch для всех запросов
             });
         });
-        
-        // Обработка незащищенных ссылок (обычная навигация)
-        document.querySelectorAll('a[data-protected="false"]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                // Обычная навигация без проверки токена
-                // Позволяем браузеру обрабатывать переходы естественным образом
-            });
-        });
-    });
-    
-    // Обновляем UI при изменении localStorage
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'access_token') {
-            updateAuthUI();
-        }
     });
     </script>
     
