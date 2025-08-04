@@ -1,68 +1,67 @@
 {% extends "base.html" %}
 
-{% block title %}Главная{% endblock %}
+{% block title %}Дашборд{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <div class="jumbotron bg-light p-5 rounded">
-            <h1 class="display-4">Добро пожаловать в DevOps Portal!</h1>
-            <p class="lead">Система управления DevOps процессами и новостями</p>
-            <hr class="my-4">
-            <p>Используйте навигацию выше для доступа к различным разделам системы.</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-tachometer-alt me-2"></i>Дашборд</h2>
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Назад
+            </a>
         </div>
     </div>
 </div>
 
-{% if user %}
-<div class="row mt-4">
-    <div class="col-md-6 col-lg-3 mb-4">
+<div class="row">
+    <div class="col-md-3 mb-4">
         <div class="card text-center">
             <div class="card-body">
                 <i class="fas fa-newspaper fa-3x text-primary mb-3"></i>
-                <h5 class="card-title">Новости</h5>
-                <p class="card-text">Просмотр и управление новостями</p>
+                <h4 class="card-title">Новости</h4>
+                <p class="card-text">Управление новостями</p>
                 <a href="/news" class="btn btn-primary">Перейти</a>
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-3 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card text-center">
             <div class="card-body">
                 <i class="fas fa-server fa-3x text-success mb-3"></i>
-                <h5 class="card-title">Инфраструктура</h5>
-                <p class="card-text">Управление серверами и ресурсами</p>
+                <h4 class="card-title">Инфраструктура</h4>
+                <p class="card-text">Управление серверами</p>
                 <a href="/infrastructure" class="btn btn-success">Перейти</a>
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-3 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card text-center">
             <div class="card-body">
                 <i class="fas fa-rocket fa-3x text-warning mb-3"></i>
-                <h5 class="card-title">Деплойменты</h5>
+                <h4 class="card-title">Деплойменты</h4>
                 <p class="card-text">Управление развертываниями</p>
                 <a href="/deployments" class="btn btn-warning">Перейти</a>
             </div>
         </div>
     </div>
-    <div class="col-md-6 col-lg-3 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card text-center">
             <div class="card-body">
                 <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
-                <h5 class="card-title">Проблемы</h5>
-                <p class="card-text">Отслеживание и решение проблем</p>
+                <h4 class="card-title">Проблемы</h4>
+                <p class="card-text">Отслеживание проблем</p>
                 <a href="/problems" class="btn btn-danger">Перейти</a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
+<div class="row">
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-chart-bar me-2"></i>Статистика</h5>
+                <h5><i class="fas fa-chart-bar me-2"></i>Статистика системы</h5>
             </div>
             <div class="card-body">
                 <div class="row text-center">
@@ -106,17 +105,4 @@
         </div>
     </div>
 </div>
-{% else %}
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5><i class="fas fa-lock me-2"></i>Доступ ограничен</h5>
-                <p class="card-text">Для доступа к функциям системы необходимо войти в систему.</p>
-                <a href="/login" class="btn btn-primary">Войти в систему</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
 {% endblock %} 

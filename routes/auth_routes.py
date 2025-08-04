@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Request, HTTPException, status, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from fastapi.security import HTTPBearer
-from auth.models import UserLogin, UserCreate, Token
-from auth.auth import authenticate_user, get_current_user, create_access_token, get_current_user_from_request
-from auth.utils import get_password_hash, load_users, save_users
-import json
+from auth.auth import authenticate_user, create_access_token, get_current_user_from_request
+from auth.utils import get_user, create_user
+from auth.models import UserLogin, UserCreate
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates/auth")
+templates = Jinja2Templates(directory="templates")
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -25,9 +23,9 @@ async def login(request: Request, user_credentials: UserLogin):
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     access_token = create_access_token(data={"sub": user["username"]})
-    
+
     # Создаем ответ с cookie
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie(
@@ -37,7 +35,7 @@ async def login(request: Request, user_credentials: UserLogin):
         max_age=86400,  # 24 часа
         samesite="lax"
     )
-    
+
     return response
 
 @router.get("/register", response_class=HTMLResponse)
@@ -48,30 +46,30 @@ async def register_page(request: Request):
 @router.post("/register")
 async def register(user_data: UserCreate):
     """API для регистрации пользователя"""
-    users = load_users()
-    
-    if user_data.username in users:
+    # Проверяем, существует ли пользователь
+    existing_user = get_user(user_data.username)
+    if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already registered"
         )
     
-    hashed_password = get_password_hash(user_data.password)
-    user_dict = {
-        "username": user_data.username,
-        "hashed_password": hashed_password,
-        "disabled": False,
-        "role": user_data.role
-    }
-    
-    users[user_data.username] = user_dict
-    save_users(users)
+    # Создаем нового пользователя
+    user = create_user(user_data.username, user_data.password, user_data.role)
     
     return {"message": "User created successfully"}
 
 @router.get("/logout")
 async def logout():
     """Выход из системы"""
-    response = RedirectResponse(url="/", status_code=302)
-    response.delete_cookie("access_token")
+    response = RedirectResponse(url="/login", status_code=302)
+    response.delete_cookie(key="access_token")
     return response
+
+@router.get("/profile", response_class=HTMLResponse)
+async def profile_page(request: Request):
+    """Страница профиля"""
+    current_user = await get_current_user_from_request(request)
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse("profile.html", {"request": request, "user": current_user}) 

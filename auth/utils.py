@@ -49,7 +49,7 @@ def verify_token(token: str) -> Optional[str]:
 
 def load_users() -> dict:
     """Загрузка пользователей из JSON файла"""
-    users_file = "data/users.json"
+    users_file = "data/users/users.json"
     if os.path.exists(users_file):
         with open(users_file, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -58,7 +58,7 @@ def load_users() -> dict:
 def save_users(users: dict):
     """Сохранение пользователей в JSON файл"""
     os.makedirs("data", exist_ok=True)
-    with open("data/users.json", "w", encoding="utf-8") as f:
+    with open("data/users/users.json", "w", encoding="utf-8") as f:
         json.dump(users, f, ensure_ascii=False, indent=2)
 
 def get_user(username: str):

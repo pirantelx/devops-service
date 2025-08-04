@@ -11,6 +11,7 @@ from auth.auth import get_current_user, create_access_token
 from auth.models import User, UserLogin
 from auth.utils import verify_password, get_password_hash
 from data.data_manager import DataManager
+from data.news_manager import NewsManager
 from routes import (
     main,
     auth,
@@ -30,6 +31,7 @@ templates = Jinja2Templates(directory="templates")
 
 # Инициализация менеджера данных
 data_manager = DataManager()
+news_manager = NewsManager()
 
 # Подключение роутов
 app.include_router(main.router)

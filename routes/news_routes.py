@@ -8,7 +8,7 @@ from auth.models import NewsCreate, NewsUpdate
 from typing import Optional
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates/news")
+templates = Jinja2Templates(directory="templates")
 news_manager = NewsManager()
 
 @router.get("/news", response_class=HTMLResponse)
@@ -42,7 +42,7 @@ async def news_page(
     # Получаем список всех лейблов для фильтра
     labels = news_manager.get_labels()
     
-    return templates.TemplateResponse("news.html", {
+    return templates.TemplateResponse("news/news.html", {
         "request": request,
         "user": current_user,
         "news_list": result["news"],
@@ -74,7 +74,7 @@ async def news_detail(request: Request, news_id: str):
     if not news:
         raise HTTPException(status_code=404, detail="Новость не найдена")
     
-    return templates.TemplateResponse("news_detail.html", {
+    return templates.TemplateResponse("news/news_detail.html", {
         "request": request,
         "user": current_user,
         "news": news
@@ -93,7 +93,7 @@ async def news_create_page(request: Request):
     
     labels = news_manager.get_labels()
     
-    return templates.TemplateResponse("news_create.html", {
+    return templates.TemplateResponse("news/news_create.html", {
         "request": request,
         "user": current_user,
         "labels": labels
@@ -143,7 +143,7 @@ async def news_edit_page(request: Request, news_id: str):
     
     labels = news_manager.get_labels()
     
-    return templates.TemplateResponse("news_edit.html", {
+    return templates.TemplateResponse("news/news_edit.html", {
         "request": request,
         "user": current_user,
         "news": news,
