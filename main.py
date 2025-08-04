@@ -20,7 +20,6 @@ from routes import (
     deployments,
     infrastructure,
     ai_chat,
-    profile,
     news,
     problems
     )
@@ -41,11 +40,9 @@ app.include_router(settings.router)
 app.include_router(deployments.router)
 app.include_router(infrastructure.router)
 app.include_router(ai_chat.router)
-app.include_router(profile.router)
 app.include_router(news.router)
 app.include_router(problems.router)
 
 
 if __name__ == "__main__":
-    os.system ("ls -l")
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

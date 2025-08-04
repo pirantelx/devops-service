@@ -8,7 +8,10 @@ from auth.utils import get_password_hash, load_users, save_users
 import json
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates/auth")
+
+templates = Jinja2Templates(
+    directory=["./templates/auth", "./templates/main"]
+)
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -75,3 +78,20 @@ async def logout():
     response = RedirectResponse(url="/", status_code=302)
     response.delete_cookie("access_token")
     return response
+
+@router.get("/profile", response_class=HTMLResponse)
+async def profile_page(request: Request):
+    """Страница профиля"""
+    current_user = await get_current_user_from_request(request)
+    if not current_user:
+        return templates.TemplateResponse("login.html", {"request": request})
+    
+    return templates.TemplateResponse("profile.html", {"request": request, "user": current_user})
+
+@router.get("/profile/edit", response_class=HTMLResponse)
+async def profile_edit_page(request: Request, current_user: dict = Depends(get_current_user_from_request)):
+    """Страница редактирования профиля"""
+    return templates.TemplateResponse("profile_edit.html", {
+        "request": request,
+        "user": current_user
+    }) 

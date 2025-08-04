@@ -1,4 +1,4 @@
-{% extends "../templates/main/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}Новости{% endblock %}
 
@@ -183,7 +183,7 @@
 <div class="row mt-3">
     <div class="col-12 text-center">
         <small class="text-muted">
-            Показано {{ (pagination.page - 1) * 6 + 1 }}-{{ min(pagination.page * 6, pagination.total) }} из {{ pagination.total }} новостей
+            Показано {{ (pagination.page - 1) * 6 + 1 }}-{{ (pagination.page * 6, pagination.total) }} из {{ pagination.total }} новостей
         </small>
     </div>
 </div>

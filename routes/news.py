@@ -8,7 +8,9 @@ from auth.models import NewsCreate, NewsUpdate
 from typing import Optional
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates/news")
+templates = Jinja2Templates(
+    directory=["./templates/news", "./templates/main"]
+)
 news_manager = NewsManager()
 
 @router.get("/news", response_class=HTMLResponse)
