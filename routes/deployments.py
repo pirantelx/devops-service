@@ -5,7 +5,9 @@ from auth.auth import get_current_user_from_request
 from data.data_manager import DataManager
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(
+    directory=["./templates/autodeploy", "./templates/main"]
+)
 data_manager = DataManager()
 
 @router.get("/deployments", response_class=HTMLResponse)
