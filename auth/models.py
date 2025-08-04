@@ -1,11 +1,10 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Literal
 
 class User(BaseModel):
     username: str
-    email: Optional[str] = None
-    full_name: Optional[str] = None
     disabled: Optional[bool] = None
+    role: Literal["Разработчик", "Сопровожденец", "DevOps"]
 
 class UserInDB(User):
     hashed_password: str
@@ -16,9 +15,8 @@ class UserLogin(BaseModel):
 
 class UserCreate(BaseModel):
     username: str
-    email: str
     password: str
-    full_name: Optional[str] = None
+    role: Literal["Разработчик", "Сопровожденец", "DevOps"]
 
 class Token(BaseModel):
     access_token: str

@@ -50,14 +50,12 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            redirect: 'follow'
         });
         
         if (response.ok) {
-            const result = await response.json();
-            // Сохраняем токен в localStorage
-            localStorage.setItem('access_token', result.access_token);
-            // Перенаправляем на главную страницу
+            // При успешном входе сервер перенаправит нас
             window.location.href = '/';
         } else {
             const error = await response.json();

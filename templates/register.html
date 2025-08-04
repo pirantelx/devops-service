@@ -16,12 +16,13 @@
                         <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="full_name" class="form-label">Полное имя</label>
-                        <input type="text" class="form-control" id="full_name" name="full_name">
+                        <label for="role" class="form-label">Роль</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="">Выберите роль...</option>
+                            <option value="Разработчик">Разработчик</option>
+                            <option value="Сопровожденец">Сопровожденец</option>
+                            <option value="DevOps">DevOps</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Пароль</label>
@@ -61,10 +62,14 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const formData = new FormData(this);
     const data = {
         username: formData.get('username'),
-        email: formData.get('email'),
-        full_name: formData.get('full_name'),
-        password: formData.get('password')
+        password: formData.get('password'),
+        role: formData.get('role')
     };
+    
+    if (!data.role) {
+        alert('Пожалуйста, выберите роль!');
+        return;
+    }
     
     try {
         const response = await fetch('/register', {

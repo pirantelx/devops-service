@@ -21,7 +21,7 @@ async def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 @router.post("/login")
-async def login(user_credentials: UserLogin):
+async def login(request: Request, user_credentials: UserLogin):
     """API для входа пользователя"""
     user = await authenticate_user(user_credentials.username, user_credentials.password)
     if not user:
@@ -32,7 +32,18 @@ async def login(user_credentials: UserLogin):
         )
     
     access_token = create_access_token(data={"sub": user["username"]})
-    return {"access_token": access_token, "token_type": "bearer"}
+    
+    # Создаем ответ с cookie
+    response = RedirectResponse(url="/", status_code=302)
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        max_age=3600,  # 1 час
+        samesite="lax"
+    )
+    
+    return response
 
 @router.post("/register")
 async def register(user_data: UserCreate):
@@ -48,10 +59,9 @@ async def register(user_data: UserCreate):
     hashed_password = get_password_hash(user_data.password)
     user_dict = {
         "username": user_data.username,
-        "email": user_data.email,
-        "full_name": user_data.full_name,
         "hashed_password": hashed_password,
-        "disabled": False
+        "disabled": False,
+        "role": user_data.role
     }
     
     users[user_data.username] = user_dict
@@ -62,7 +72,9 @@ async def register(user_data: UserCreate):
 @router.get("/logout")
 async def logout():
     """Выход из системы"""
-    return RedirectResponse(url="/login")
+    response = RedirectResponse(url="/", status_code=302)
+    response.delete_cookie("access_token")
+    return response
 
 @router.get("/profile", response_class=HTMLResponse)
 async def profile_page(request: Request, current_user: dict = Depends(get_current_user)):

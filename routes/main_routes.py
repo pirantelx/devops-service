@@ -6,7 +6,7 @@ from auth.auth import get_current_user
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
-@router.get("/home", response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse)
 async def home_page(request: Request, current_user: dict = Depends(get_current_user)):
     """Главная страница"""
     return templates.TemplateResponse("home.html", {"request": request, "user": current_user})
