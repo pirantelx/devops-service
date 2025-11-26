@@ -1,0 +1,29 @@
+services:
+
+  app-devops:
+    build: ./devops-service
+    container_name: app-devops
+    restart: always
+    networks:
+      - backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./devops-service:/opt/app
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./proxy/favicon.ico:/var/www/devops-portal/static/img/favicon.ico
+    depends_on:
+      - app-devops
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
