@@ -136,4 +136,26 @@ class DataManager:
     def load_problems_data(self, name: str = "problems") -> Optional[List[Dict[str, Any]]]:
         """Загрузка данных проблем"""
         data = self.load_json(name, "problems")
-        return data if data else [] 
+        return data if data else []
+    
+    def save_chat_history(self, username: str, messages: List[Dict[str, Any]]) -> bool:
+        """Сохранение истории чата пользователя"""
+        return self.save_json(username, {"messages": messages}, "ai_chat")
+    
+    def load_chat_history(self, username: str) -> List[Dict[str, Any]]:
+        """Загрузка истории чата пользователя"""
+        data = self.load_json(username, "ai_chat")
+        if data and "messages" in data:
+            return data["messages"]
+        return []
+    
+    def add_chat_message(self, username: str, role: str, content: str) -> bool:
+        """Добавление сообщения в историю чата"""
+        from datetime import datetime
+        history = self.load_chat_history(username)
+        history.append({
+            "role": role,
+            "content": content,
+            "timestamp": datetime.now().isoformat()
+        })
+        return self.save_chat_history(username, history) 

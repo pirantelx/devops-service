@@ -57,7 +57,8 @@ def load_users() -> dict:
 
 def save_users(users: dict):
     """Сохранение пользователей в JSON файл"""
-    os.makedirs("data", exist_ok=True)
+    # Ensure nested users directory exists before writing file
+    os.makedirs("data/users", exist_ok=True)
     with open("data/users/users.json", "w", encoding="utf-8") as f:
         json.dump(users, f, ensure_ascii=False, indent=2)
 

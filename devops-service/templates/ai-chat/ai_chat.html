@@ -139,49 +139,56 @@ document.addEventListener('DOMContentLoaded', function() {
     // Отправка сообщения по кнопке
     sendButton.addEventListener('click', sendMessage);
     
-    function sendMessage() {
+    async function sendMessage() {
         const message = messageInput.value.trim();
         if (!message) return;
         
         // Добавляем сообщение пользователя
         addMessage(message, 'user');
         messageInput.value = '';
+        sendButton.disabled = true;
         
         // Показываем индикатор печати
         typingIndicator.style.display = 'block';
         
-        // Имитируем ответ ИИ
-        setTimeout(() => {
+        try {
+            // Отправляем запрос на сервер
+            const response = await fetch('/ai-chat/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            });
+            
+            const data = await response.json();
+            
+            // Скрываем индикатор печати
             typingIndicator.style.display = 'none';
-            const aiResponse = generateAIResponse(message);
-            addMessage(aiResponse, 'ai');
-        }, 1000 + Math.random() * 2000);
+            
+            if (data.status === 'success') {
+                addMessage(data.response, 'ai');
+            } else {
+                addMessage('Извините, произошла ошибка при обработке вашего запроса.', 'ai');
+                console.error('Ошибка:', data);
+            }
+        } catch (error) {
+            typingIndicator.style.display = 'none';
+            addMessage('Ошибка соединения с сервером. Проверьте подключение к интернету.', 'ai');
+            console.error('Ошибка:', error);
+        } finally {
+            sendButton.disabled = false;
+        }
     }
     
     function addMessage(text, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
-        messageDiv.innerHTML = `<strong>${sender === 'user' ? 'Вы' : 'ИИ'}:</strong> ${text}`;
+        // Экранируем HTML для безопасности
+        const textEscaped = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        messageDiv.innerHTML = `<strong>${sender === 'user' ? 'Вы' : 'ИИ'}:</strong> ${textEscaped}`;
         chatContainer.appendChild(messageDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-    
-    function generateAIResponse(userMessage) {
-        const responses = {
-            'ci/ccd': 'Для настройки CI/CD pipeline рекомендую использовать Jenkins, GitLab CI или GitHub Actions. Основные этапы: сборка, тестирование, деплой.',
-            'docker': 'Лучшие практики Docker: используйте многоэтапные сборки, минимизируйте размер образов, не запускайте контейнеры от root.',
-            'мониторинг': 'Для мониторинга используйте Prometheus + Grafana, ELK Stack или Datadog. Отслеживайте метрики производительности и логи.',
-            'безопасность': 'Основы безопасности: регулярные обновления, принцип наименьших привилегий, шифрование данных, мониторинг доступа.'
-        };
-        
-        const lowerMessage = userMessage.toLowerCase();
-        for (const [key, response] of Object.entries(responses)) {
-            if (lowerMessage.includes(key)) {
-                return response;
-            }
-        }
-        
-        return 'Спасибо за ваш вопрос! Я помогу вам с DevOps задачами. Можете задать более конкретный вопрос о CI/CD, контейнеризации, мониторинге или безопасности.';
     }
 });
 </script>

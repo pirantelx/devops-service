@@ -64,7 +64,8 @@ async def register(user_data: UserCreate):
         "username": user_data.username,
         "hashed_password": hashed_password,
         "disabled": False,
-        "role": user_data.role
+        "role": user_data.role,
+        "full_name": user_data.full_name
     }
     
     users[user_data.username] = user_dict

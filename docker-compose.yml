@@ -10,6 +10,22 @@ services:
       - "8000:8000"
     volumes:
       - ./devops-service:/opt/app
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2  # или другая модель
+    depends_on:
+      - ollama
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: always
+    networks:
+      - backend
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
 
   nginx:
     image: nginx:latest
@@ -27,3 +43,6 @@ services:
 networks:
   backend:
     driver: bridge
+
+volumes:
+  ollama_data:

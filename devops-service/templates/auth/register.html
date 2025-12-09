@@ -16,11 +16,16 @@
                         <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="mb-3">
+                        <label for="full_name" class="form-label">ФИО сотрудника</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Иванов Иван Иванович">
+                    </div>
+                    <div class="mb-3">
                         <label for="role" class="form-label">Роль</label>
                         <select class="form-select" id="role" name="role" required>
                             <option value="">Выберите роль...</option>
                             <option value="Разработчик">Разработчик</option>
                             <option value="Сопровожденец">Сопровожденец</option>
+                            <option value="DevOps">DevOps</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -62,7 +67,8 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const data = {
         username: formData.get('username'),
         password: formData.get('password'),
-        role: formData.get('role')
+        role: formData.get('role'),
+        full_name: formData.get('full_name') || null
     };
     
     if (!data.role) {

@@ -2,13 +2,15 @@
   "19823928": {
     "username": "19823928",
     "hashed_password": "$2b$12$GPvWhXPsQgXIzsPCgoG2HePgN8LFNUxX16tFQx7tVhYSYM5k7LGA2",
+    "full_name": "Дюсенов Дамир Сергеевич",
     "disabled": false,
     "role": "DevOps"
   },
-  "15": {
-    "username": "15",
-    "hashed_password": "$2b$12$2clAdHLxmTy689YNYyy8yuTgrHuk1/vhWaV7WO8cAGH.ISXe8qjk.",
+  "pirantelx": {
+    "username": "pirantelx",
+    "hashed_password": "$2b$12$On4xjBuCasntPVuaH.C1c.Av2uBpfdIRzD52RyeUo2GmKAeTEmp0G",
     "disabled": false,
-    "role": "Разработчик"
+    "role": "DevOps",
+    "full_name": "Иванов Иван Иванович"
   }
 }

@@ -6,6 +6,7 @@ class User(BaseModel):
     username: str
     disabled: Optional[bool] = None
     role: Literal["Разработчик", "Сопровожденец", "DevOps"]
+    full_name: Optional[str] = None
 
 class UserInDB(User):
     hashed_password: str
@@ -18,6 +19,7 @@ class UserCreate(BaseModel):
     username: str
     password: str
     role: Literal["Разработчик", "Сопровожденец", "DevOps"]
+    full_name: Optional[str] = None
 
 class Token(BaseModel):
     access_token: str
