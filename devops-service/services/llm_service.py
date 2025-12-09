@@ -15,21 +15,27 @@ class LLMService:
         self.model_name = os.getenv("OLLAMA_MODEL", "llama3.2:1b")
         self.data_manager = DataManager()
         self.news_manager = NewsManager()
-        self._ensure_model_loaded()
+        self._model_checked = False
+        # Не проверяем модель при инициализации, чтобы не блокировать запуск приложения
     
     def _ensure_model_loaded(self):
-        """Проверяет и загружает модель, если необходимо"""
+        """Проверяет и загружает модель, если необходимо (вызывается при первом использовании)"""
+        if self._model_checked:
+            return
+        
         try:
-            response = httpx.get(f"{self.ollama_host}/api/tags", timeout=10.0)
+            response = httpx.get(f"{self.ollama_host}/api/tags", timeout=5.0)
             if response.status_code == 200:
                 models = response.json().get("models", [])
                 model_names = [m.get("name", "") for m in models]
                 if self.model_name not in model_names:
                     print(f"Модель {self.model_name} не найдена. Загружаю...")
                     self._pull_model()
+            self._model_checked = True
         except Exception as e:
             print(f"Предупреждение: не удалось подключиться к Ollama: {e}")
             print("Убедитесь, что Ollama запущен и доступен")
+            self._model_checked = True  # Помечаем как проверенную, чтобы не повторять попытки
     
     def _pull_model(self):
         """Загружает модель в Ollama"""
@@ -266,6 +272,9 @@ class LLMService:
     async def generate_response(self, user_message: str, chat_history: List[Dict[str, str]] = None) -> str:
         """Генерирует ответ на вопрос пользователя с использованием контекста данных"""
         try:
+            # Проверяем модель при первом использовании
+            self._ensure_model_loaded()
+            
             # Загружаем все данные
             all_data = self._load_all_data()
             
