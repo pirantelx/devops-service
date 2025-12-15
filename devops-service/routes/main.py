@@ -4,7 +4,9 @@ from fastapi.templating import Jinja2Templates
 from auth.auth import get_current_user_from_request
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates/main")
+# Основные шаблоны + авторизация
+templates = Jinja2Templates(directory=["./templates/main", "./templates/auth"])
+# Шаблоны чата используют общую базу и свой каталог
 ai_chat_templates = Jinja2Templates(directory=["./templates/ai-chat", "./templates/main"])
 
 @router.get("/", response_class=HTMLResponse)

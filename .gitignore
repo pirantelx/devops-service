@@ -1,0 +1,5 @@
+certbot
+certbot/conf/archive/devops.pirantelx.ru/cert1.pem
+certbot/conf/archive/devops.pirantelx.ru/chain1.pem
+certbot/conf/archive/devops.pirantelx.ru/fullchain1.pem
+certbot/conf/archive/devops.pirantelx.ru/privkey1.pem
